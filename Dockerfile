@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install necessary dependencies
 RUN apt update && apt install -y \
-    curl python3 python3-pip \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Ollama
@@ -21,11 +21,8 @@ WORKDIR /app
 # Copy chatbot files
 COPY . /app
 
-# Install dependencies if using Python
-RUN pip3 install -r requirements.txt  # Remove if your chatbot is Node.js-based
-
 # Expose the application port
 EXPOSE 80
 
-# Start Ollama and the chatbot
-CMD ollama serve --host 0.0.0.0 & python3 app.py  # Modify if using Node.js
+# Start Ollama and serve static files using Python's built-in HTTP server
+CMD ollama serve --host 0.0.0.0 & python3 -m http.server 80
